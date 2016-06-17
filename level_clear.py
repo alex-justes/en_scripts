@@ -8,6 +8,8 @@ from io import BytesIO
 import sys
 import re
 from optparse import OptionParser
+import time
+import random
 
 parser = OptionParser()
 parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
@@ -24,6 +26,8 @@ parser.add_option("-l", "--level", action="store", type="string", dest="level", 
 				  help="set level")
 parser.add_option("-g", "--gid", action="store", type="string", dest="gid", default="",
 				  help="set gid")
+parser.add_option("-t", "--time", action="store", type="int", dest="time", default="0",
+				  help="specify random delay in seconds between queries [0]")
 parser.add_option("--bonuses", action="store_true", dest="bonuses", default=False,
 				  help="delete all bonuses")
 parser.add_option("--tasks", action="store_true", dest="tasks", default=False,
@@ -51,6 +55,7 @@ if (options.verbose):
 	print("Cookie file: ", options.cookies)
 	print("Level: ", options.level)
 	print("GID: ", options.gid)
+	print("Time: ", options.time)
 	if (not delete_anything):
 		print("Warning: nothing will be deleted!")
 	if (options.bonuses):
@@ -82,22 +87,26 @@ bonuses = []
 
 if (options.tasks):
 	tasks = re.findall(r'tid=(\d+)', content)
-	if (not options.quiet)
+	if (not options.quiet):
 		print("Tasks: ", tasks)
 if (options.clues):
 	clues = re.findall(r'prid=(\d+)', content)
-	if (not options.quiet)
+	if (not options.quiet):
 		print("Clues: ", clues)
 if (options.bonuses):
 	bonuses = re.findall(r'bonus=(\d+)', content)
-	if (not options.quiet)
+	if (not options.quiet):
 		print("Bonuses: ", bonuses)
 
 if (options.fake):
 	sys.exit()
 
+
+random.seed()
+
 for t in tasks:
-	print("Delete task ", t, " on level ", options.level)
+	if (not options.quiet):
+		print("Delete task ", t, " on level ", options.level)
 	url = "http://"+options.domain+"/Administration/Games/TaskEdit.aspx?action=TaskDelete&gid="+options.gid+"&level="+options.level+"&tid="+t
 	buffer = BytesIO()
 	c = pycurl.Curl()
@@ -107,9 +116,14 @@ for t in tasks:
 	c.setopt(c.WRITEDATA, buffer)
 	c.perform()
 	c.close()
+	t = random.randint(0, options.time)
+	if (not options.quiet):
+		print("Sleep for: ",t, " seconds")
+	time.sleep(t)
 
 for cl in clues:
-	print("Delete clue ", cl, " on level ", options.level)
+	if (not options.quiet):
+		print("Delete clue ", cl, " on level ", options.level)
 	url = "http://"+options.domain+"/Administration/Games/PromptEdit.aspx?action=PromptDelete&gid="+options.gid+"&level="+options.level+"&prid="+cl
 	buffer = BytesIO()
 	c = pycurl.Curl()
@@ -119,9 +133,14 @@ for cl in clues:
 	c.setopt(c.WRITEDATA, buffer)
 	c.perform()
 	c.close()
+	t = random.randint(0, options.time)
+	if (not options.quiet):
+		print("Sleep for: ",t, " seconds")
+	time.sleep(t)
 
 for b in bonuses:
-	print("Delete bonus ", b, " on level ", options.level)
+	if (not options.quiet):
+		print("Delete bonus ", b, " on level ", options.level)
 	url = "http://"+options.domain+"/Administration/Games/BonusEdit.aspx?action=delete&gid="+options.gid+"&level="+options.level+"&bonus="+b
 	buffer = BytesIO()
 	c = pycurl.Curl()
@@ -131,6 +150,10 @@ for b in bonuses:
 	c.setopt(c.WRITEDATA, buffer)
 	c.perform()
 	c.close()
+	t = random.randint(0, options.time)
+	if (not options.quiet):
+		print("Sleep for: ",t, " seconds")
+	time.sleep(t)
 	
 
 
