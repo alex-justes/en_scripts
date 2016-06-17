@@ -34,6 +34,8 @@ parser.add_option("--tasks", action="store_true", dest="tasks", default=False,
 				  help="delete all tasks")
 parser.add_option("--clues", action="store_true", dest="clues", default=False,
 				  help="delete all clues")
+parser.add_option("--all", action="store_true", dest="all", default=False,
+				  help="delete all")
 
 (options, args) = parser.parse_args(sys.argv)
 
@@ -46,6 +48,11 @@ if (options.gid == ""):
 	error = True
 if (error):
 	sys.exit()
+
+if (options.all):
+	options.bonuses = True
+	options.tasks = True
+	options.clues = True
 
 delete_anything = False
 if (options.bonuses or options.tasks or options.clues):

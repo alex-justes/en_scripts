@@ -53,7 +53,7 @@ with open(options.file) as f:
 				clue_1_path = path + "/clue_1"
 				clue_2_path = path + "/clue_2"
 				clue_3_path = path + "/clue_3"
-				clear = "./level_clear.py -l " + level + " -g " + options.gid + " -t 10 --tasks --clues --bonuses"
+				clear = "./level_clear.py -l " + level + " -g " + options.gid + " -t 10 --all"
 				load_task = "./level_upload_task.py -l " + level + " -g " + options.gid + " -t 10 -f " + task_path
 				load_clue_1 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t 10 -f " + clue_1_path + " --seconds 5" 
 				load_clue_2 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t 10 -f " + clue_2_path + " --seconds 10" 
