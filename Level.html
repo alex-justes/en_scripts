@@ -1,0 +1,41 @@
+<!-- Задание -->
+<!-- Точка 1 — img1, img2, img3 -->
+<!-- Точка 2 — img4, img5, img6 -->
+<div id="level1">
+	<p>Первый код на трубе</p>
+	<a id="img1" href="http://d2.endata.cx/data/games/24842/1.jpg">
+		<img src="http://d2.endata.cx/data/games/24842/1.jpg" height="300"></img>
+	</a>
+</div>
+<br>
+<div id="level2">
+	<p>А второй — в трубе</p>
+	<a id="img4" href="http://d2.endata.cx/data/games/24842/4.jpg">
+		<img src="http://d2.endata.cx/data/games/24842/4.jpg" height="300"></img>
+	</a>
+</div>
+
+<script>
+var dis = $(".cols-wrapper .color_dis");
+if (dis.length == 1 && dis.parent().text() == "Бонус: код не введён")
+{
+	var bonus = $.proxy(
+		Array.prototype.join, 
+		$(".cols-wrapper .color_correct")
+			.map(function(ind, el){ return $(el).text().slice(-2); })
+		)("");
+	var input = $("[name='LevelAction.Answer']");
+	input.val(bonus);
+	input.parent("form").submit();
+}
+</script>
+
+<!-- Подсказка 1 -->
+<a id="img2" href="http://d2.endata.cx/data/games/24842/2.jpg"><img src="http://d2.endata.cx/data/games/24842/2.jpg" height="300"></img></a>
+<a id="img5" href="http://d2.endata.cx/data/games/24842/5.jpg"><img src="http://d2.endata.cx/data/games/24842/5.jpg" height="300"></img></a>
+<script>$("#img2").detach().appendTo($("#level1"));$("#img5").detach().appendTo($("#level2"));</script>
+
+<!-- Подсказка 2 -->
+<a id="img3" href="http://d2.endata.cx/data/games/24842/3.jpg"><img src="http://d2.endata.cx/data/games/24842/3.jpg" height="300"></img></a>
+<a id="img6" href="http://d2.endata.cx/data/games/24842/6.jpg"><img src="http://d2.endata.cx/data/games/24842/6.jpg" height="300"></img></a>
+<script>$("#img3").detach().appendTo($("#level1"));$("#img6").detach().appendTo($("#level2"));</script>
