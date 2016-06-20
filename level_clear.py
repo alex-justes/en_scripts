@@ -7,6 +7,7 @@ import pycurl
 from io import BytesIO
 import sys
 import re
+from urllib.parse import urlencode
 from optparse import OptionParser
 import time
 import random
@@ -34,6 +35,8 @@ parser.add_option("--tasks", action="store_true", dest="tasks", default=False,
                   help="delete all tasks")
 parser.add_option("--clues", action="store_true", dest="clues", default=False,
                   help="delete all clues")
+parser.add_option("--answers", action="store_true", dest="answers", default=False,
+                  help="delete all answers")
 parser.add_option("--all", action="store_true", dest="all", default=False,
                   help="delete all")
 
@@ -53,9 +56,10 @@ if (options.all):
     options.bonuses = True
     options.tasks = True
     options.clues = True
+    options.answers = True
 
 delete_anything = False
-if (options.bonuses or options.tasks or options.clues):
+if (options.bonuses or options.tasks or options.clues or options.answers):
     delete_anything = True
 if (options.verbose):
     print("Domain: ", options.domain)
@@ -71,12 +75,14 @@ if (options.verbose):
         print("Tasks will be deleted")
     if (options.clues):
         print("Clues will be deleted")
+    if (options.answers):
+        print("Answers will be deleted")
 
 if (not delete_anything):
     sys.exit()
 
 # Retrieve level to parse
-url = "http://"+options.domain+"/Administration/Games/LevelEditor.aspx?gid="+options.gid+"&level="+options.level
+url = "http://"+options.domain+"/Administration/Games/LevelEditor.aspx?gid="+options.gid+"&level="+options.level+"&swanswers=1"
 buffer = BytesIO()
 c = pycurl.Curl()
 c.setopt(c.URL, url)
@@ -85,13 +91,13 @@ c.setopt(c.COOKIEFILE, options.cookies)
 c.setopt(c.WRITEDATA, buffer)
 c.perform()
 c.close()
-
 content = str(buffer.getvalue())
 
 tasks = []
 clues = []
 bonuses = []
-
+answers = []
+ansId = ""
 if (options.tasks):
     tasks = re.findall(r'tid=(\d+)', content)
     if (not options.quiet):
@@ -104,6 +110,23 @@ if (options.bonuses):
     bonuses = re.findall(r'bonus=(\d+)', content)
     if (not options.quiet):
         print("Bonuses: ", bonuses)
+if (options.answers):
+    rans = re.search(r'divAnswersEdit_(\d+)', content)
+    if (rans):
+        ansId = rans.group(1)
+        url = "http://"+options.domain+"/Administration/Games/LevelEditor.aspx?gid="+options.gid+"&level="+options.level+"&swanswers=1&editanswers="+ansId
+        buffer = BytesIO()
+        c = pycurl.Curl()
+        c.setopt(c.URL, url)
+        c.setopt(c.FOLLOWLOCATION, True)
+        c.setopt(c.COOKIEFILE, options.cookies)
+        c.setopt(c.WRITEDATA, buffer)
+        c.perform()
+        c.close()
+        content = str(buffer.getvalue())
+        answers = re.findall(r'chkDeleteAnswer_(\d+)', content)
+        if (not options.quiet):
+            print("Answers: ", answers)
 
 if (options.fake):
     sys.exit()
@@ -161,7 +184,31 @@ for b in bonuses:
     if (not options.quiet):
         print("Sleep for: ",t, " seconds")
     time.sleep(t)
-    
 
-
+if (options.answers and answers):
+    url = "http://"+options.domain+"/Administration/Games/LevelEditor.aspx?gid="+options.gid+"&level="+options.level
+    if (not options.quiet):
+        print("Delete answers ", answers," on level ", options.level)
+    post_data = {}
+    i = 0
+    for a in answers:
+        post_data["chkDeleteAnswer_"+a] = a
+        i += 1
+    post_data["updateanswers"] = ansId
+    post_data["btnDelete.x"] = "0"
+    post_data["btnDelete.y"] = "0"
+    postfields = urlencode(post_data)
+    buffer = BytesIO()
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.POSTFIELDS, postfields)
+    c.setopt(c.COOKIEFILE, options.cookies)
+    c.setopt(c.WRITEDATA, buffer)
+    c.perform()
+    c.close()
+    t = random.randint(0, options.time)
+    if (not options.quiet):
+        print("Sleep for: ",t, " seconds")
+    time.sleep(t)
 

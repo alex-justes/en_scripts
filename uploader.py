@@ -63,7 +63,7 @@ with open(options.file) as f:
                 load_clue_1 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_1_path + " --seconds 5" 
                 load_clue_2 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_2_path + " --seconds 10" 
                 load_clue_3 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_3_path + " --seconds 15" 
-               
+                answers = ""
                 bonuses = []
                 bid = 1
                 with open(bonus_path) as fb:
@@ -74,6 +74,7 @@ with open(options.file) as f:
                         pointID = (int(level)*5 - 5) + bid
                         if (bid == 6):
                             ss += " --answers '" + rb.group(1) + "'" + " --name 'Категория'"
+                            answers = "./level_upload_answer.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " --answers '" + rb.group(1)  + "'"
                         else:
                             ss += " --answers '" + rb.group(1) + ";пп" + rb.group(1) + "'" + " --name 'Точка " + str(pointID) + "'"
                         bid += 1
@@ -86,6 +87,7 @@ with open(options.file) as f:
                 print(load_clue_3)
                 for b in bonuses:
                     print(b)
+                print(answers)
 
                 os.system(clear)
                 os.system(load_task)
@@ -94,5 +96,6 @@ with open(options.file) as f:
                 os.system(load_clue_3)
                 for b in bonuses:
                     os.system(b)
+                os.system(answers)
         
 
