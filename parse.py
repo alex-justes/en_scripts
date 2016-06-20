@@ -6,7 +6,7 @@ import os
 
 fileName = sys.argv[1]
 acc = ""
-
+code = 1
 with open(fileName) as f:
     for line in f:
         rtask = re.search(r'<!-- Задание (\d+) -->', line)
@@ -23,19 +23,27 @@ with open(fileName) as f:
                 print("flush clue3")
                 ff = open("./levels/"+task+"/clue_3",'w')
                 ff.write(acc)
-                ff.close
+                ff.close()
 
             acc=""
             task = rtask.group(1)
+            code = 1
             print("task ", task, " started")
             if (not os.access("./levels/"+task, os.F_OK)):
                 os.mkdir("./levels/"+task)
         elif (isCode):
             acc += rcode.group(1)+":"+rcode.group(2)+"\n"
+            ff = open("./levels/"+task+"/bonus_help_"+str(code), 'w')
+            ff.write(rcode.group(1))
+            ff.close()
+            ff = open("./levels/"+task+"/bonus_task_"+str(code),'w')
+            ff.write(rcode.group(2)+" минут")
+            ff.close()
+            code += 1
             if (re.match(r'\d{10}',rcode.group(1))):
                 ff = open("./levels/"+task+"/bonus",'w')
                 ff.write(acc)
-                ff.close
+                ff.close()
                 acc = ""
                
         elif (isClue):
@@ -44,17 +52,17 @@ with open(fileName) as f:
                 print("flush task")
                 ff = open("./levels/"+task+"/task",'w')
                 ff.write(acc)
-                ff.close
+                ff.close()
             elif (clue == "2"):
                 print("flush clue1")
                 ff = open("./levels/"+task+"/clue_1",'w')
                 ff.write(acc)
-                ff.close
+                ff.close()
             elif (clue == "3"):
                 print("flush clue2")
                 ff = open("./levels/"+task+"/clue_2",'w')
                 ff.write(acc)
-                ff.close
+                ff.close()
             acc = ""
         elif (not isComment):
             acc += line
@@ -64,4 +72,4 @@ with open(fileName) as f:
 print("flush clue3")
 ff = open("./levels/"+task+"/clue_3",'w')
 ff.write(acc)
-ff.close
+ff.close()

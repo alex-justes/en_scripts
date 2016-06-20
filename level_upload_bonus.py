@@ -98,11 +98,13 @@ for l in nums:
 
 
 task = ""
-with open(options.task, 'r') as content_file:
-    task = content_file.read()
+if (options.task != ""):
+    with open(options.task, 'r') as content_file:
+        task = content_file.read()
 help = ""
-with open(options.help, 'r') as content_file:
-    help = content_file.read()
+if (options.help != ""):
+    with open(options.help, 'r') as content_file:
+        help = content_file.read()
 
 url = "http://"+options.domain+"/Administration/Games/BonusEdit.aspx?gid="+options.gid+"&level="+options.level+"&bonus=0&action=save"
 
