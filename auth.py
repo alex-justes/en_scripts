@@ -12,28 +12,28 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
-				  help="verbose output")
+                  help="verbose output")
 parser.add_option("-d", "--domain", action="store", type="string", dest="domain", default="demo.en.cx",
-				  help="set domain [demo.en.cx]")
+                  help="set domain [demo.en.cx]")
 parser.add_option("-c", "--cookies", action="store", type="string", dest="cookies", default="cookies.txt",
-				  help="set file with auth-cookies [cookies.txt]")
+                  help="set file with auth-cookies [cookies.txt]")
 parser.add_option("-l", "--login", action="store", type="string", dest="login", default="",
-				  help="set login")
+                  help="set login")
 parser.add_option("-p", "--password", action="store", type="string", dest="password", default="",
-				  help="set password")
+                  help="set password")
 
 (options, args) = parser.parse_args(sys.argv)
 
 if (options.verbose):
-	print("Domain: ", options.domain)
-	print("Cookie file: ", options.cookies)
-	if (options.login != ""):
-		print("Login: ", options.login)
+    print("Domain: ", options.domain)
+    print("Cookie file: ", options.cookies)
+    if (options.login != ""):
+        print("Login: ", options.login)
 
 if (options.login == ""):
-	options.login = input("Login: ")
+    options.login = input("Login: ")
 if (options.password == ""):
-	options.password = getpass.getpass("Password: ")
+    options.password = getpass.getpass("Password: ")
 
 url = "http://"+options.domain+"/Login.aspx"
 
