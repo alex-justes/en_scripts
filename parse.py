@@ -7,11 +7,21 @@ import os
 fileName = sys.argv[1]
 acc = ""
 code = 1
+
+def chooseEnding( num ):
+    rem = num % 10
+    if (rem == 1 and num != 11):
+        return "минута"
+    elif ((rem == 2 or rem == 3 or rem == 4) and not (num == 12 or num == 13 or num == 14)):
+        return "минуты"
+    else:
+        return "минут"
+
 with open(fileName) as f:
     for line in f:
         rtask = re.search(r'<!-- Задание (\d+) -->', line)
         rclue = re.search(r'<!-- Подсказка (\d+) -->', line)
-        rcode = re.search(r'<!-- (.+) — (\d+) минут -->', line)
+        rcode = re.search(r'<!-- (.+) — (\d+) минут.* -->', line)
         rcomment = re.search(r'<!--.*-->', line)
         isTask = rtask != None
         isClue = rclue != None
@@ -37,7 +47,8 @@ with open(fileName) as f:
             ff.write(rcode.group(1))
             ff.close()
             ff = open("./levels/"+task+"/bonus_task_"+str(code),'w')
-            ff.write(rcode.group(2)+" минут")
+            ttime = int(rcode.group(2))
+            ff.write(rcode.group(2)+" "+chooseEnding(ttime))
             ff.close()
             code += 1
             if (re.match(r'\d{10}',rcode.group(1))):

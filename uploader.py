@@ -58,11 +58,11 @@ with open(options.file) as f:
                 clue_3_path = path + "/clue_3"
                 bonus_path = path + "/bonus"
 
-                clear = "./level_clear.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " --all"
-                load_task = "./level_upload_task.py -l " + level + " -g " + options.gid + " -t " + str(options.time) +  " -f " + task_path
-                load_clue_1 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_1_path + " --seconds 5" 
-                load_clue_2 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_2_path + " --seconds 10" 
-                load_clue_3 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_3_path + " --seconds 15" 
+                clear = "./level_clear.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " --all" + " -d " + options.domain
+                load_task = "./level_upload_task.py -l " + level + " -g " + options.gid + " -t " + str(options.time) +  " -f " + task_path + " -d " + options.domain
+                load_clue_1 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_1_path + " --hours 1"  + " -d " + options.domain
+                load_clue_2 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_2_path + " --hours 2"  + " -d " + options.domain
+                load_clue_3 = "./level_upload_clue.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " -f " + clue_3_path + " --hours 3 --minutes 30"  + " -d " + options.domain
                 answers = ""
                 bonuses = []
                 bid = 1
@@ -70,11 +70,11 @@ with open(options.file) as f:
                     for b in fb:
                         rb = re.search(r'(.+):(.+)', b)
                         ss = "./level_upload_bonus.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " --fhelp " + bonus_path + "_help_"+str(bid) + \
-                                " --minutes " + rb.group(2) + " --on_levels " + level + " --ftask " + bonus_path + "_task_"+str(bid)
+                                " --minutes " + rb.group(2) + " --on_levels " + level + " --ftask " + bonus_path + "_task_"+str(bid) + " -d " + options.domain
                         pointID = (int(level)*5 - 5) + bid
                         if (bid == 6):
                             ss += " --answers '" + rb.group(1) + "'" + " --name 'Категория'"
-                            answers = "./level_upload_answer.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " --answers '" + rb.group(1)  + "'"
+                            answers = "./level_upload_answer.py -l " + level + " -g " + options.gid + " -t " + str(options.time) + " --answers '" + rb.group(1)  + "'" + " -d " + options.domain
                         else:
                             ss += " --answers '" + rb.group(1) + ";пп" + rb.group(1) + "'" + " --name 'Точка " + str(pointID) + "'"
                         bid += 1
